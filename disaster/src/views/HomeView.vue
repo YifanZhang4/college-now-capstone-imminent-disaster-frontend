@@ -13,7 +13,7 @@ import { ref, onMounted } from 'vue'
 const decks = ref('')
 
 async function getCards() {
-  let res = await fetch('http://localhost:8000')
+  let res = await fetch('http://localhost:8000/')
   let data = await res.json()
   decks.value = data
   console.log(data)

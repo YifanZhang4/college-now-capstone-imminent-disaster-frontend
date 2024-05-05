@@ -5,25 +5,21 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-let deck = ref('')
-
 async function saveDeck() {
   const requestOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({})
+    body: JSON.stringify({ deck: deck.value })
   }
 
   try {
-    const response = await fetch('http://localhost:8000/add', requestOptions)
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+    const res = await fetch('http://localhost:8000/add', requestOptions)
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`)
     }
-    const data = await response.json()
-    console.log(data)
+    const data = await res.json()
     console.log('success!!')
   } catch (error) {
     console.error('problem', error)

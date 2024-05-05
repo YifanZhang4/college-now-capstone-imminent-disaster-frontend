@@ -30,11 +30,11 @@ async function signUp() {
   }
 
   try {
-    const response = await fetch('http://localhost:8000/register', requestOptions)
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+    const res = await fetch('http://localhost:8000/register', requestOptions)
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`)
     }
-    const data = await response.json()
+    const data = await res.json()
     console.log(data)
     console.log('success!!')
   } catch (error) {

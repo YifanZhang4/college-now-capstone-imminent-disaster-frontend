@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="cardsContainer">
-      <div v-for="card in cards" :key="card.id">
+      <div class="cards" v-for="card in cards" :key="card.id">
         <img :src="card.images.small" alt="" srcset="" />
       </div>
     </div>
@@ -51,10 +51,18 @@ onMounted(() => {
 }
 
 .cardsContainer {
+  display: flex;
+  flex-direction: column;
   background-color: gray;
   position: absolute;
   right: 0;
-  top: 30%;
-  width: 30rem;
+  padding-top: 7rem;
+  width: 15rem;
+}
+
+.cards {
+  display: flex;
+  transform: scale(0.8);
+  margin-top: -3rem;
 }
 </style>

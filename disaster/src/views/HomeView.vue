@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>home</h1>
     <div id="cardHolder">
       <div class="cards" v-for="(deck, index) in decks" :key="deck" :pokemon="deck" :id="index + 1">
         <h1>a deck</h1>

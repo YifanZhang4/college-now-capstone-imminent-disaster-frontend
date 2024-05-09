@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <div class="search">
+      <searchCards></searchCards>
+    </div>
     <div class="cardsContainer">
       <div class="cards" v-for="card in cards" :key="card.id">
         <img :src="card.images.small" alt="" srcset="" />
@@ -10,10 +13,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import searchCards from './searchCards.vue'
 
-let cards = ref('')
+let cards = ref([])
 
-async function getCards() {
+const getCards = async () => {
   const requestOptions = {
     method: 'GET',
     headers: {
@@ -40,6 +44,8 @@ async function getCards() {
 onMounted(() => {
   getCards()
 })
+
+defineExpose({ getCards })
 </script>
 
 <style scoped>
@@ -48,6 +54,11 @@ onMounted(() => {
   position: absolute;
   right: 0;
   top: 0;
+}
+
+.search {
+  position: absolute;
+  z-index: 100;
 }
 
 .cardsContainer {

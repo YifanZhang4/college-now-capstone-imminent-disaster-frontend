@@ -1,15 +1,26 @@
 <template>
-  <div>{{ deckName }}</div>
+  <div>
+    <div class="deck-showcase">
+      <button class="side-deck" v-for="deck in decks">{{ name }}</button>
+    </div>
+    <div class="Deck-Holder-1">
+      <img class="Deck-Image" src="" />
+      <h1>{{ name }}</h1>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 async function DisplayDecks() {
+  const name = ref('')
+  const thumbail = ref('')
+
   const requestData = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({})
+    body: JSON.stringify({ name: deck.name.value, thumbail: deck.image })
   }
 
   try {

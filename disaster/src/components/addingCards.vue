@@ -10,7 +10,12 @@
       />
     </div>
     <div class="cardsContainer">
-      <div class="cards" v-for="card in cards" :key="card.id" @click="() => chosenCard(card.id)">
+      <div class="cards" v-for="card in cards" :key="card.id" @click="() => interactCard(card.id)">
+        <img :src="card.images.small" :alt="card.name" srcset="" />
+      </div>
+    </div>
+    <div class="deckContainer">
+      <div class="cards" v-for="card in inDeck" :key="card.id" @click="() => interactCard(card.id)">
         <img :src="card.images.small" :alt="card.name" srcset="" />
       </div>
     </div>
@@ -60,28 +65,26 @@ const filterCards = () => {
   }
 }
 
-const chosenCard = (cardId) => {
-  const card = allCards.value.find((card) => card.id === cardId)
-  if (card) {
-    inDeck.value.push(card)
-    console.log('Card added to deck', card)
-    allCards.value.splice(card, 1)
-    console.log('Card aremoved', card)
+const interactCard = (cardId) => {
+  const inAllCards = allCards.value.find((card) => card.id.includes(cardId))
+  if (inAllCards) {
+    allCards.value.push(inAllCards)
+    console.log('Card removed', inAllCards)
+    inDeck.value.splice(inAllCards, 1)
+    console.log('Card removed 2.0', inAllCards)
+  } else if (inAllCards) {
+    inDeck.value.push(inAllCards)
+    console.log('Card added to deck', inAllCards)
+    allCards.value.splice(inAllCards, 1)
+    console.log('Card removed', inAllCards)
   } else {
-    console.error('Card not found')
+    console.log('probl;em found, please dont tell me about it')
   }
 }
 
 onMounted(() => {
   getCards()
 })
-
-const getInDeck = () => {
-  console.log('wow look at those cards', inDeck.value)
-  return inDeck.value
-}
-
-defineExpose({ getInDeck })
 </script>
 
 <style scoped>
@@ -115,6 +118,11 @@ defineExpose({ getInDeck })
   right: 0;
   padding-top: 2rem;
   width: 15rem;
+}
+
+.deckContainer {
+  background-color: white;
+  width: 30rem;
 }
 
 .cards {

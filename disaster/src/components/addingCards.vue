@@ -1,22 +1,37 @@
 <template>
-  <div class="container">
-    <div class="searchContainer">
-      <input
-        type="text"
-        placeholder="Search Pokemon by Name..."
-        v-model="input"
-        class="searchBar"
-        @keypress.enter="filterCards"
-      />
-    </div>
-    <div class="cardsContainer">
-      <div class="cards" v-for="card in cards" :key="card.id" @click="() => interactCard(card.id)">
-        <img :src="card.images.small" :alt="card.name" srcset="" />
+  <div>
+    <div id="findContainer">
+      <div class="searchContainer">
+        <input
+          type="text"
+          placeholder="Search Pokemon by Name..."
+          v-model="input"
+          class="searchBar"
+          @keypress.enter="filterCards"
+        />
+      </div>
+      <div class="cardsContainer">
+        <div
+          class="cards"
+          v-for="card in cards"
+          :key="card.id"
+          @click="() => interactCard(card.id)"
+        >
+          <img :src="card.images.small" :alt="card.name" srcset="" />
+        </div>
       </div>
     </div>
-    <div class="deckContainer">
-      <div class="cards" v-for="card in inDeck" :key="card.id" @click="() => interactCard(card.id)">
-        <img :src="card.images.small" :alt="card.name" srcset="" />
+    <div id="deck">
+      <h1>In deck</h1>
+      <div class="deckContainer">
+        <div
+          class="cards"
+          v-for="card in inDeck"
+          :key="card.id"
+          @click="() => interactCard(card.id)"
+        >
+          <img :src="card.images.small" :alt="card.name" srcset="" />
+        </div>
       </div>
     </div>
   </div>
@@ -66,19 +81,25 @@ const filterCards = () => {
 }
 
 const interactCard = (cardId) => {
-  const inAllCards = allCards.value.find((card) => card.id.includes(cardId))
-  if (inAllCards) {
-    allCards.value.push(inAllCards)
-    console.log('Card removed', inAllCards)
-    inDeck.value.splice(inAllCards, 1)
-    console.log('Card removed 2.0', inAllCards)
-  } else if (inAllCards) {
-    inDeck.value.push(inAllCards)
-    console.log('Card added to deck', inAllCards)
-    allCards.value.splice(inAllCards, 1)
-    console.log('Card removed', inAllCards)
+  const inAllCards = !!allCards.value.find((card) => card.id.includes(cardId))
+  const cardIndex = allCards.value.findIndex((card) => card.id.includes(cardId))
+  console.log(cardIndex)
+  const cardInAllCards = allCards.value.find((card) => card.id.includes(cardId))
+  if (inAllCards === false) {
+    allCards.value.push(cardInAllCards)
+    // console.log('Card removed from deck', cardInAllCards)
+    inDeck.value.splice(cardIndex, 1)
+    // console.log('Card added to all', cardInAllCards)
+    return
+  } else if (inAllCards === true) {
+    inDeck.value.push(cardInAllCards)
+    // console.log('Card added to deck', cardInAllCards)
+    allCards.value.splice(cardIndex, 1)
+    // console.log('Card removed from all', cardInAllCards)
+    return
   } else {
     console.log('probl;em found, please dont tell me about it')
+    return
   }
 }
 
@@ -88,7 +109,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.container {
+#findContainer {
   background-color: gray;
   position: absolute;
   right: 0;
@@ -120,9 +141,25 @@ onMounted(() => {
   width: 15rem;
 }
 
+h1 {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: black;
+  width: 10rem;
+  height: 10rem;
+  z-index: 10;
+}
+
 .deckContainer {
   background-color: white;
-  width: 30rem;
+  width: 20rem;
+  height: 10rem;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  z-index: 0;
 }
 
 .cards {

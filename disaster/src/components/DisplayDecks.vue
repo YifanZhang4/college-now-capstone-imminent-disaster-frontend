@@ -1,22 +1,23 @@
 <template>
   <div>
     <div class="deck-showcase">
-      <button class="side-deck" v-for="deck in decks">{{ name }}</button>
+      <div class="side-deck">
+        <button class="deck-select" v-for="deck in decks">{{ name }}</button>
+      </div>
     </div>
     <div class="Deck-Holder-1">
-      <img class="Deck-Image" src="" />
       <h1>{{ name }}</h1>
+      <img class="Deck-Image" src="" />
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-
+const name = ref('')
+const thumbnail = ref('')
+onMounted(() => DisplayDecks())
 async function DisplayDecks() {
-  const name = ref('')
-  const thumbail = ref('')
-
   const requestData = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
@@ -24,17 +25,22 @@ async function DisplayDecks() {
   }
 
   try {
-    const response = await fetch('http://localhost:8000/', requestData)
+    const response = await fetch('http://localhost:8000/view', requestData)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
     const data = await response.json()
     console.log(data)
-    console.log('success!!')
   } catch (error) {
     console.error('problem', error)
   }
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.side-deck {
+  flex-direction: column;
+  width: 30%;
+  margin: 15px;
+}
+</style>

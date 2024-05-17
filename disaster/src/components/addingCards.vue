@@ -11,17 +11,28 @@
         />
       </div>
       <div class="cardsContainer">
-        <div class="cards" v-for="card in cards" :key="card" @click="() => interactCard(card.id)">
+        <div
+          class="availCards"
+          v-for="card in cards"
+          :key="card.id"
+          @click="() => interactCard(card.id)"
+        >
           <img :src="card.images.small" :alt="card.name" />
         </div>
         <button v-if="currentPage < 25" @click="nextPage">Next</button>
-        <button v-if="currentPage >= 2" @click="lastPage">Back</button>
+        <button v-if="currentPage > 1" @click="lastPage">Back</button>
       </div>
     </div>
     <div id="deck">
       <h1>In deck</h1>
+      <button @click="saveDeck">save</button>
       <div class="deckContainer">
-        <div class="cards" v-for="card in inDeck" :key="card" @click="() => interactCard(card.id)">
+        <div
+          class="deckCards"
+          v-for="card in inDeck"
+          :key="card.id"
+          @click="() => interactCard(card.id)"
+        >
           <img :src="card.images.small" :alt="card.name" />
         </div>
       </div>
@@ -35,8 +46,10 @@ import { ref, onMounted } from 'vue'
 let input = ref('')
 let cards = ref([])
 let allCards = ref([])
+let allCards2 = ref([])
 let inDeck = ref([])
 let currentPage = 1
+let totalCards = ref(0)
 
 const getCards = async () => {
   const requestOptions = {
@@ -59,10 +72,17 @@ const getCards = async () => {
     }
     const data1 = await res1.json()
     const data = await res.json()
+    totalCards.value = data1.total
+    allCards2.value = data1.data
+    allCards.value = data1.data.filter(
+      (card) => !inDeck.value.some((deckCard) => deckCard.id === card.id)
+    )
     cards.value = data.data
-    allCards.value = data1.data
+      .filter((card) => !inDeck.value.some((deckCard) => deckCard.id === card.id))
+      .slice(0, 10)
+    // console.log(inDeck.value)
+    // console.log(cards.value)
     console.log('success!!')
-    return data
   } catch (error) {
     console.error('problem', error)
   }
@@ -74,7 +94,7 @@ const filterCards = () => {
       card.name.toLowerCase().includes(input.value.toLowerCase())
     )
     cards.value = newCards
-    console.log(cards.value)
+    // console.log(cards.value)
   } else {
     console.error('allCards is not an array')
   }
@@ -82,20 +102,25 @@ const filterCards = () => {
 
 const interactCard = (cardId) => {
   const inAllCards = !!allCards.value.find((card) => card.id.includes(cardId))
-  const cardIndex = allCards.value.findIndex((card) => card.id.includes(cardId))
+  const cardIndexAll = allCards.value.findIndex((card) => card.id.includes(cardId))
+  const cardIndex = cards.value.findIndex((card) => card.id.includes(cardId))
+  const deckIndex = inDeck.value.findIndex((card) => card.id.includes(cardId))
   // console.log(cardIndex)
-  const cardInAllCards = allCards.value.find((card) => card.id.includes(cardId))
+  const cardInAllCards = allCards2.value.find((card) => card.id.includes(cardId))
   if (inAllCards === false) {
     allCards.value.push(cardInAllCards)
-    // console.log('Card removed from deck', cardInAllCards)
-    inDeck.value.splice(cardIndex, 1)
+    cards.value.push(cardInAllCards)
+    // console.log('Card inDeck from deck', cardInAllCards)
+    inDeck.value.splice(deckIndex, 1)
+    // console.log('inDeck', inDeck.value)
     // console.log('Card added to all', cardInAllCards)
     return
   } else if (inAllCards === true) {
     inDeck.value.push(cardInAllCards)
     // console.log('Card added to deck', cardInAllCards)
-    allCards.value.splice(cardIndex, 1)
-    // console.log('Card removed from all', cardInAllCards)
+    allCards.value.splice(cardIndexAll, 1)
+    cards.value.splice(cardIndex, 1)
+    // console.log('Card inDeck from all', cardInAllCards)
     sessionStorage.setItem('inDeck', JSON.stringify(inDeck.value))
     return
   } else {
@@ -105,14 +130,20 @@ const interactCard = (cardId) => {
 }
 
 const nextPage = async () => {
-  currentPage++
-  getCards()
+  if (currentPage * 10 < 250) {
+    currentPage++
+    getCards()
+  }
 }
 
 const lastPage = async () => {
-  currentPage--
-  getCards()
+  if (currentPage > 1) {
+    currentPage--
+    getCards() // Fetch the previous page of cards
+  }
 }
+
+const saveDeck = () => {}
 
 onMounted(() => {
   getCards()
@@ -139,6 +170,7 @@ onMounted(() => {
 .searchBar {
   background: white url('../assets/icons/magnifying-glass-solid.svg') no-repeat 5px;
   background-size: 20px 20px;
+  border-radius: 20px;
   padding-left: 3rem;
   height: 2rem;
 }
@@ -182,17 +214,26 @@ h1 {
 }
 
 .deckContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   background-color: white;
-  width: 20rem;
-  height: 10rem;
   position: absolute;
-  left: 0;
-  top: 0;
-  height: 100vh;
+  bottom: 0;
+  height: 90vh;
+  width: 69rem;
   z-index: 0;
+  left: 15%;
+  overflow-y: auto;
 }
 
-.cards {
+.deckCards {
+  transform: scale(0.8);
+  min-width: 270px;
+  min-height: 194px;
+}
+
+.availCards {
   display: flex;
   transform: scale(0.8);
   margin-top: -3rem;

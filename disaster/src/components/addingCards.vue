@@ -1,6 +1,14 @@
 <template>
   <div>
-    <savePopup v-if="(saving = true)"></savePopup>
+    <div id="popup" v-if="(saving = true)">
+      <form @submit.prevent="saveDeck()">
+        <label for="name">Deck Name:</label>
+        <input type="text" name="name" id="name" v-model="name" />
+        <label for="name">Deck Description:</label>
+        <input type="text" name="description" id="description" v-model="description" />
+        <button @click="saveDeck">Save</button>
+      </form>
+    </div>
     <div id="findContainer">
       <div class="searchContainer">
         <input
@@ -25,7 +33,7 @@
       </div>
     </div>
     <div id="deck">
-      <button @click="save" id="save">save</button>
+      <button @click="saving = true" id="save">save</button>
       <div class="deckContainer">
         <div
           class="deckCards"
@@ -42,7 +50,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import savePopup from './savePopup.vue'
 
 let input = ref('')
 let cards = ref([])
@@ -52,6 +59,8 @@ let inDeck = ref([])
 let currentPage = 1
 let totalCards = ref(0)
 let saving = false
+let name = ref('')
+let description = ref('')
 
 const getCards = async () => {
   const requestOptions = {
@@ -145,32 +154,32 @@ const lastPage = async () => {
   }
 }
 
-const save = () => {
-  console.log('haiiii')
-  saving = true
-  return inDeck
+const saveDeck = async () => {
+  console.log(user)
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: name.value,
+      description: description.value,
+      cards: inDeck.value,
+      creator: user
+    })
+  }
+
+  try {
+    const res = await fetch('http://localhost:8000/add', requestOptions)
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`)
+    }
+    console.log('success!!')
+    router.push({ path: '/home' })
+  } catch (error) {
+    console.error('deck didnt save :()', error)
+  }
 }
-
-// const saveDeck = async () => {
-//   const requestOptions = {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify({ cards: inDeck.value })
-//   }
-
-//   try {
-//     const res = await fetch('http://localhost:8000/add', requestOptions)
-//     if (!res.ok) {
-//       throw new Error(`HTTP error! status: ${res.status}`)
-//     }
-//     console.log('success!!')
-//     router.push({ path: '/home' })
-//   } catch (error) {
-//     console.error('deck didnt save :()', error)
-//   }
-// }
 
 onMounted(() => {
   getCards()
@@ -230,16 +239,6 @@ onMounted(() => {
   border-radius: 10px;
 }
 
-h1 {
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: black;
-  width: 10rem;
-  height: 10rem;
-  z-index: 10;
-}
-
 .deckContainer {
   display: flex;
   flex-direction: row;
@@ -249,7 +248,7 @@ h1 {
   bottom: 0;
   height: 90vh;
   width: 69rem;
-  z-index: 0;
+  z-index: 1;
   left: 15%;
   overflow-y: auto;
 }
@@ -269,5 +268,18 @@ h1 {
 #save {
   top: 0;
   position: absolute;
+}
+
+#popup {
+  width: 10rem;
+  height: 20rem;
+  background-color: red;
+  border-radius: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -50px;
+  z-index: 100;
 }
 </style>

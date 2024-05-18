@@ -1,5 +1,5 @@
 <template>
-  <div id="container">
+  <div id="popup">
     <form @submit.prevent="saveDeck()">
       <label for="name">Deck Name:</label>
       <input type="text" name="name" id="name" v-model="name" />

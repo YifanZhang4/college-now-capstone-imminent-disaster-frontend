@@ -8,7 +8,7 @@
 
 <script setup>
 import { watch, ref } from 'vue'
-import getInDeck from './addingCards.vue'
+import getInDeck from '../addingCards.vue'
 
 const inDeck = ref([])
 

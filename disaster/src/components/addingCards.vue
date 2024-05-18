@@ -1,5 +1,6 @@
 <template>
   <div>
+    <savePopup v-if="(saving = true)"></savePopup>
     <div id="findContainer">
       <div class="searchContainer">
         <input
@@ -24,8 +25,7 @@
       </div>
     </div>
     <div id="deck">
-      <h1>In deck</h1>
-      <button @click="saveDeck">save</button>
+      <button @click="save" id="save">save</button>
       <div class="deckContainer">
         <div
           class="deckCards"
@@ -42,6 +42,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import savePopup from './savePopup.vue'
 
 let input = ref('')
 let cards = ref([])
@@ -50,6 +51,7 @@ let allCards2 = ref([])
 let inDeck = ref([])
 let currentPage = 1
 let totalCards = ref(0)
+let saving = false
 
 const getCards = async () => {
   const requestOptions = {
@@ -143,7 +145,32 @@ const lastPage = async () => {
   }
 }
 
-const saveDeck = () => {}
+const save = () => {
+  console.log('haiiii')
+  saving = true
+  return inDeck
+}
+
+// const saveDeck = async () => {
+//   const requestOptions = {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({ cards: inDeck.value })
+//   }
+
+//   try {
+//     const res = await fetch('http://localhost:8000/add', requestOptions)
+//     if (!res.ok) {
+//       throw new Error(`HTTP error! status: ${res.status}`)
+//     }
+//     console.log('success!!')
+//     router.push({ path: '/home' })
+//   } catch (error) {
+//     console.error('deck didnt save :()', error)
+//   }
+// }
 
 onMounted(() => {
   getCards()
@@ -237,5 +264,10 @@ h1 {
   display: flex;
   transform: scale(0.8);
   margin-top: -3rem;
+}
+
+#save {
+  top: 0;
+  position: absolute;
 }
 </style>

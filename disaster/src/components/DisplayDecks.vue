@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="deck-showcase">
-      <button class="side-deck" v-for="deck in decks">{{ name }}</button>
+      <button class="side-deck" v-for="deck in decks" :key="deck">{{ name }}</button>
     </div>
     <div class="Deck-Holder-1">
       <img class="Deck-Image" src="" />

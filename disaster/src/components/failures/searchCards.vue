@@ -8,7 +8,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import getCards from '../components/availCards.vue'
+import getCards from './availCards.vue'
 
 const searchTerm = ref('')
 

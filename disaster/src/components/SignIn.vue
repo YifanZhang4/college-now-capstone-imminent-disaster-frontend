@@ -25,6 +25,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { defineStore } from 'pinia'
 
 const username = ref('')
 const password = ref('')
@@ -47,6 +48,13 @@ async function signIn() {
     console.error('problem', error)
   }
 }
+
+export const storedUser = defineStore('username', () => {
+  const user = username.value
+  return { user }
+})
+
+defineExpose({ storedUser })
 </script>
 
 <style scoped>

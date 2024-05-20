@@ -2,7 +2,7 @@
   <div>
     <div class="deck-showcase">
       <div class="side-deck">
-        <button class="deck-select" v-for="deck in decks">{{ name }}</button>
+        <button class="deck-select" v-for="deck in decks" :key="deck">{{ name }}</button>
       </div>
     </div>
     <div class="Deck-Holder-1">

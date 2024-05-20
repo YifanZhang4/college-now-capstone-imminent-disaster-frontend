@@ -1,12 +1,16 @@
 <template>
   <div>
-    <div id="popup" v-if="(saving = true)">
-      <form @submit.prevent="saveDeck()">
+    <button @click="back()" id="back">Back</button>
+    <div id="popup" v-if="saving">
+      <form>
         <label for="name">Deck Name:</label>
         <input type="text" name="name" id="name" v-model="name" />
+        <br />
         <label for="name">Deck Description:</label>
         <input type="text" name="description" id="description" v-model="description" />
         <button @click="saveDeck">Save</button>
+        <br />
+        <button @click="saveToggle">Cancel</button>
       </form>
     </div>
     <div id="findContainer">
@@ -33,7 +37,7 @@
       </div>
     </div>
     <div id="deck">
-      <button @click="saving = true" id="save">save</button>
+      <button @click="saveToggle()" id="save">save</button>
       <div class="deckContainer">
         <div
           class="deckCards"
@@ -50,6 +54,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { storedUser } from './SignIn.vue'
 
 let input = ref('')
 let cards = ref([])
@@ -58,9 +64,12 @@ let allCards2 = ref([])
 let inDeck = ref([])
 let currentPage = 1
 let totalCards = ref(0)
-let saving = false
 let name = ref('')
 let description = ref('')
+let router = useRouter()
+let saving = ref(false)
+const store = storedUser()
+const username = store.username
 
 const getCards = async () => {
   const requestOptions = {
@@ -91,8 +100,6 @@ const getCards = async () => {
     cards.value = data.data
       .filter((card) => !inDeck.value.some((deckCard) => deckCard.id === card.id))
       .slice(0, 10)
-    // console.log(inDeck.value)
-    // console.log(cards.value)
     console.log('success!!')
   } catch (error) {
     console.error('problem', error)
@@ -105,7 +112,6 @@ const filterCards = () => {
       card.name.toLowerCase().includes(input.value.toLowerCase())
     )
     cards.value = newCards
-    // console.log(cards.value)
   } else {
     console.error('allCards is not an array')
   }
@@ -116,22 +122,16 @@ const interactCard = (cardId) => {
   const cardIndexAll = allCards.value.findIndex((card) => card.id.includes(cardId))
   const cardIndex = cards.value.findIndex((card) => card.id.includes(cardId))
   const deckIndex = inDeck.value.findIndex((card) => card.id.includes(cardId))
-  // console.log(cardIndex)
   const cardInAllCards = allCards2.value.find((card) => card.id.includes(cardId))
   if (inAllCards === false) {
     allCards.value.push(cardInAllCards)
     cards.value.push(cardInAllCards)
-    // console.log('Card inDeck from deck', cardInAllCards)
     inDeck.value.splice(deckIndex, 1)
-    // console.log('inDeck', inDeck.value)
-    // console.log('Card added to all', cardInAllCards)
     return
   } else if (inAllCards === true) {
     inDeck.value.push(cardInAllCards)
-    // console.log('Card added to deck', cardInAllCards)
     allCards.value.splice(cardIndexAll, 1)
     cards.value.splice(cardIndex, 1)
-    // console.log('Card inDeck from all', cardInAllCards)
     sessionStorage.setItem('inDeck', JSON.stringify(inDeck.value))
     return
   } else {
@@ -154,8 +154,28 @@ const lastPage = async () => {
   }
 }
 
+const getUser = async () => {
+  const thisUser = username.value
+  const requestData = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username: thisUser })
+  }
+  try {
+    const res = await fetch('http://localhost:8000/user', requestData)
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`)
+    }
+    const data = await res.json()
+    console.log(data)
+  } catch (error) {
+    console.error('problem', error)
+  }
+}
+
 const saveDeck = async () => {
-  console.log(user)
+  console.log('saving')
+  await getUser()
   const requestOptions = {
     method: 'POST',
     headers: {
@@ -174,15 +194,25 @@ const saveDeck = async () => {
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`)
     }
-    console.log('success!!')
+    console.log('success!! deck saved')
     router.push({ path: '/home' })
   } catch (error) {
     console.error('deck didnt save :()', error)
   }
 }
 
+const saveToggle = () => {
+  console.log('toggle')
+  saving.value = !saving.value
+}
+
+const back = () => {
+  router.push({ path: '/home' })
+}
+
 onMounted(() => {
   getCards()
+  console.log(username)
 })
 </script>
 
@@ -270,9 +300,15 @@ onMounted(() => {
   position: absolute;
 }
 
+#back {
+  top: 0;
+  position: absolute;
+  margin-left: 10rem;
+}
+
 #popup {
-  width: 10rem;
-  height: 20rem;
+  width: 20rem;
+  height: 30rem;
   background-color: red;
   border-radius: 20px;
   position: absolute;
@@ -280,6 +316,6 @@ onMounted(() => {
   left: 50%;
   margin-top: -50px;
   margin-left: -50px;
-  z-index: 100;
+  z-index: 1000;
 }
 </style>

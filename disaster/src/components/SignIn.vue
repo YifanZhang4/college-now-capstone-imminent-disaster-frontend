@@ -2,7 +2,7 @@
   <div id="signInContainer">
     <h1>Sign In</h1>
     <br />
-    <form @submit.prevent="signIn()">
+    <form @submit.prevent="() => signIn()">
       <div id="usernameDIV">
         <label for="username">Username: </label>
         <input type="text" placeholder="Enter Username" v-model="username" id="username" required />
@@ -17,7 +17,7 @@
           required
         />
       </div>
-      <button type="submit" @click="signIn()">Sign In</button>
+      <button type="submit">Sign In</button>
     </form>
   </div>
 </template>
@@ -25,27 +25,16 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '../stores/user'
 
 const username = ref('')
 const password = ref('')
 const router = useRouter()
+const userStore = useUserStore()
 
-async function signIn() {
-  const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: username.value, password: password.value })
-  }
-  try {
-    const res = await fetch('http://localhost:8000/login', requestOptions)
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`)
-    }
-    console.log('success!!')
-    router.push({ path: '/home' })
-  } catch (error) {
-    console.error('problem', error)
-  }
+const signIn = async () => {
+  await userStore.login(username.value, password.value)
+  router.push({ path: '/home' })
 }
 </script>
 

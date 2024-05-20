@@ -22,6 +22,8 @@
           class="searchBar"
           @keypress.enter="filterCards"
         />
+        <br />
+        <button @click="saveToggle()" id="save">save</button>
       </div>
       <div class="cardsContainer">
         <div
@@ -32,12 +34,14 @@
         >
           <img :src="card.images.small" :alt="card.name" />
         </div>
-        <button v-if="currentPage < 25" @click="nextPage">Next</button>
-        <button v-if="currentPage > 1" @click="lastPage">Back</button>
+        <div id="cardPage">
+          <button v-if="currentPage < 25" @click="nextPage" id="next">Next</button>
+          <br />
+          <button v-if="currentPage > 1" @click="lastPage" id="back">Back</button>
+        </div>
       </div>
     </div>
     <div id="deck">
-      <button @click="saveToggle()" id="save">save</button>
       <div class="deckContainer">
         <div
           class="deckCards"
@@ -55,7 +59,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { storedUser } from './SignIn.vue'
 
 let input = ref('')
 let cards = ref([])
@@ -68,8 +71,6 @@ let name = ref('')
 let description = ref('')
 let router = useRouter()
 let saving = ref(false)
-const store = storedUser()
-const username = store.username
 
 const getCards = async () => {
   const requestOptions = {
@@ -101,6 +102,7 @@ const getCards = async () => {
       .filter((card) => !inDeck.value.some((deckCard) => deckCard.id === card.id))
       .slice(0, 10)
     console.log('success!!')
+    console.log(cards.value)
   } catch (error) {
     console.error('problem', error)
   }
@@ -154,24 +156,24 @@ const lastPage = async () => {
   }
 }
 
-const getUser = async () => {
-  const thisUser = username.value
-  const requestData = {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: thisUser })
-  }
-  try {
-    const res = await fetch('http://localhost:8000/user', requestData)
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`)
-    }
-    const data = await res.json()
-    console.log(data)
-  } catch (error) {
-    console.error('problem', error)
-  }
-}
+// const getUser = async () => {
+//   const thisUser = username.value
+//   const requestData = {
+//     method: 'GET',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify({ username: thisUser })
+//   }
+//   try {
+//     const res = await fetch('http://localhost:8000/user', requestData)
+//     if (!res.ok) {
+//       throw new Error(`HTTP error! status: ${res.status}`)
+//     }
+//     const data = await res.json()
+//     console.log(data)
+//   } catch (error) {
+//     console.error('problem', error)
+//   }
+// }
 
 const saveDeck = async () => {
   console.log('saving')
@@ -212,7 +214,6 @@ const back = () => {
 
 onMounted(() => {
   getCards()
-  console.log(username)
 })
 </script>
 
@@ -230,7 +231,7 @@ onMounted(() => {
   padding-left: 0.5rem;
   background-color: gray;
   width: 15rem;
-  padding-bottom: 0.5rem;
+  padding-bottom: 2.5rem;
 }
 
 .searchBar {
@@ -247,9 +248,9 @@ onMounted(() => {
   background-color: gray;
   position: absolute;
   right: 0;
-  padding-top: 2rem;
+  padding-top: 2.5rem;
   width: 15rem;
-  height: 94vh;
+  height: 90vh;
   overflow-y: auto;
 }
 
@@ -273,13 +274,13 @@ onMounted(() => {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  background-color: white;
+  background-color: grey;
   position: absolute;
   bottom: 0;
   height: 90vh;
-  width: 69rem;
+  width: 80vw;
   z-index: 1;
-  left: 15%;
+  left: 1%;
   overflow-y: auto;
 }
 
@@ -296,14 +297,15 @@ onMounted(() => {
 }
 
 #save {
-  top: 0;
+  z-index: 10;
   position: absolute;
+  margin-top: 0.5rem;
+  right: 45%;
+  transform: scale(1.2);
 }
 
 #back {
   top: 0;
-  position: absolute;
-  margin-left: 10rem;
 }
 
 #popup {
@@ -317,5 +319,22 @@ onMounted(() => {
   margin-top: -50px;
   margin-left: -50px;
   z-index: 1000;
+}
+
+button {
+  background-color: whitesmoke;
+  border-radius: 20px;
+  transform: scale(1.2);
+}
+
+#next,
+#back {
+  width: 4rem;
+}
+
+#cardPage {
+  width: 10rem;
+  padding-left: 5rem;
+  padding-bottom: 1rem;
 }
 </style>

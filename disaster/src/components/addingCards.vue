@@ -59,6 +59,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useDeckStore } from '@/stores/deck'
 
 let input = ref('')
 let cards = ref([])
@@ -71,6 +72,7 @@ let name = ref('')
 let description = ref('')
 let router = useRouter()
 let saving = ref(false)
+const deckStore = useDeckStore()
 
 const getCards = async () => {
   const requestOptions = {
@@ -156,51 +158,9 @@ const lastPage = async () => {
   }
 }
 
-// const getUser = async () => {
-//   const thisUser = username.value
-//   const requestData = {
-//     method: 'GET',
-//     headers: { 'Content-Type': 'application/json' },
-//     body: JSON.stringify({ username: thisUser })
-//   }
-//   try {
-//     const res = await fetch('http://localhost:8000/user', requestData)
-//     if (!res.ok) {
-//       throw new Error(`HTTP error! status: ${res.status}`)
-//     }
-//     const data = await res.json()
-//     console.log(data)
-//   } catch (error) {
-//     console.error('problem', error)
-//   }
-// }
-
 const saveDeck = async () => {
-  console.log('saving')
-  await getUser()
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      name: name.value,
-      description: description.value,
-      cards: inDeck.value,
-      creator: user
-    })
-  }
-
-  try {
-    const res = await fetch('http://localhost:8000/add', requestOptions)
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`)
-    }
-    console.log('success!! deck saved')
-    router.push({ path: '/home' })
-  } catch (error) {
-    console.error('deck didnt save :()', error)
-  }
+  await deckStore.save(name.value, description.value, inDeck.value)
+  router.push({ path: '/home' })
 }
 
 const saveToggle = () => {
@@ -231,7 +191,8 @@ onMounted(() => {
   padding-left: 0.5rem;
   background-color: gray;
   width: 15rem;
-  padding-bottom: 2.5rem;
+  padding-bottom: 0.5rem;
+  text-align: center;
 }
 
 .searchBar {
@@ -282,6 +243,7 @@ onMounted(() => {
   z-index: 1;
   left: 1%;
   overflow-y: auto;
+  justify-content: space-evenly;
 }
 
 .deckCards {
@@ -298,9 +260,9 @@ onMounted(() => {
 
 #save {
   z-index: 10;
-  position: absolute;
+  position: relative;
   margin-top: 0.5rem;
-  right: 45%;
+  margin: 0 auto;
   transform: scale(1.2);
 }
 

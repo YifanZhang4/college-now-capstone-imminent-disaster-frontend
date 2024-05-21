@@ -1,46 +1,58 @@
 <template>
   <div>
-    <div class="deck-showcase">
-      <div class="side-deck">
-        <button class="deck-select" v-for="deck in decks" :key="deck">{{ name }}</button>
-      </div>
+    <div id="popup" v-if="changing">
+      <form>
+        <button @click="editDeck">Edit</button>
+        <button>Delete</button>
+        <button @click="toggle">Cancel</button>
+      </form>
     </div>
-    <div class="Deck-Holder-1">
-      <h1>{{ name }}</h1>
-      <img class="Deck-Image" src="" />
+    <div class="deck-showcase" @click="editDeck()">
+      <div v-for="deck in decks" :key="deck.id" id="deck">
+        <h1>{{ deck.name }}</h1>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-const name = ref('')
-const thumbnail = ref('')
-onMounted(() => DisplayDecks())
-async function DisplayDecks() {
-  const requestData = {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: deck.name.value, thumbail: deck.image })
-  }
+import { useUserStore } from '@/stores/user'
 
+const userStore = useUserStore()
+let decks = ref([])
+let changing = ref(false)
+
+const displayDecks = async () => {
+  const creator = userStore.currentUser
   try {
-    const response = await fetch('http://localhost:8000/view', requestData)
-    if (!response.ok) {
+    const res = await fetch(`http://localhost:8000/?creator=${encodeURIComponent(creator)}`)
+    if (!res.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
-    const data = await response.json()
+    const data = await res.json()
     console.log(data)
+    decks.value = data
   } catch (error) {
     console.error('problem', error)
   }
 }
+
+const editDeck = () => {
+  const id = this.deck.id
+  console.log(id)
+}
+
+const toggle = () => {
+  changing.value = !changing.value
+}
+
+onMounted(async () => {
+  await displayDecks()
+})
 </script>
 
-<style lang="scss" scoped>
-.side-deck {
-  flex-direction: column;
-  width: 30%;
-  margin: 15px;
+<style scoped>
+#deck {
 }
 </style>

@@ -21,8 +21,8 @@ export const useUserStore = defineStore({
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`)
         }
-        const data = res.json()
-        this.currentUser = data.username
+        const data = await res.json()
+        this.currentUser = data.user
         this.token = data.token
         console.log('success!!')
       } catch (error) {

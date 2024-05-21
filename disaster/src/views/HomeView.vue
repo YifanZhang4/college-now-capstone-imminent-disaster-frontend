@@ -2,16 +2,19 @@
   <div>
     <h1>home</h1>
     <RouterLink to="createdeck">Create Deck</RouterLink>
-    <div id="cardHolder">
+    <DisplayDecks></DisplayDecks>
+    <!-- <div id="cardHolder">
       <div class="cards" v-for="(deck, index) in decks" :key="deck" :pokemon="deck" :id="index + 1">
         <h1>a deck</h1>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import DisplayDecks from '@/components/DisplayDecks.vue'
+
 const decks = ref('')
 
 async function getCards() {

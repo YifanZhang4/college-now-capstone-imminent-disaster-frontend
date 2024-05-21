@@ -18,11 +18,6 @@ const router = createRouter({
       }
     },
     {
-      path: '/about',
-      name: 'about',
-      component: () => import('../views/AboutView.vue')
-    },
-    {
       path: '/signup',
       name: 'signup',
       component: () => import('../views/SignUpView.vue')
@@ -43,11 +38,14 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
   const store = useUserStore()
-  if (to.meta.needsAuth && store.currentUser == null && store.auth()) {
-    router.push({ path: '/signin' })
-    console.log('not logged in')
+  if (to.meta.needsAuth && store.currentUser == null) {
+    await checkAuth(store)
+    if (!store.isAuthenticated) {
+      router.push({ path: '/signin' })
+      console.log('Not logged in')
+    }
   }
 })
 

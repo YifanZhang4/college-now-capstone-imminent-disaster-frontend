@@ -8,7 +8,7 @@
       </form>
     </div>
     <div class="deck-showcase" @click="editDeck()">
-      <div v-for="deck in decks" :key="deck.id" id="deck">
+      <div v-for="deck in decks" :key="deck" id="deck">
         <h1>{{ deck.name }}</h1>
       </div>
     </div>
@@ -38,10 +38,10 @@ const displayDecks = async () => {
   }
 }
 
-const editDeck = () => {
-  const id = this.deck.id
-  console.log(id)
-}
+// const editDeck = () => {
+//   const id = this.deck.id
+//   console.log(id)
+// }
 
 const toggle = () => {
   changing.value = !changing.value

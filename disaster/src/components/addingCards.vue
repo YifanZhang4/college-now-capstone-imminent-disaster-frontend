@@ -2,15 +2,24 @@
   <div>
     <button @click="back()" id="back">Back</button>
     <div id="popup" v-if="saving">
-      <form>
-        <label for="name">Deck Name:</label>
+      <form id="form">
+        <label for="name">Deck Name: </label>
         <input type="text" name="name" id="name" v-model="name" />
         <br />
-        <label for="name">Deck Description:</label>
+        <label for="name">Deck Description: </label>
         <input type="text" name="description" id="description" v-model="description" />
-        <button @click="saveDeck">Save</button>
         <br />
-        <button @click="saveToggle">Cancel</button>
+        <label for="thumbnail">Deck Thumbnail: </label>
+        <input
+          type="file"
+          name="thumbnail"
+          id="thumbnail"
+          accept="image/png, image/gif, image/jpeg"
+        />
+        <br />
+        <button @click="saveDeck" id="saveButton">Save</button>
+        <br />
+        <button @click="saveToggle" id="saveCancel">Cancel</button>
       </form>
     </div>
     <div id="findContainer">
@@ -70,6 +79,7 @@ let currentPage = 1
 let totalCards = ref(0)
 let name = ref('')
 let description = ref('')
+let thumbnail = ref({})
 let router = useRouter()
 let saving = ref(false)
 const deckStore = useDeckStore()
@@ -159,7 +169,7 @@ const lastPage = async () => {
 }
 
 const saveDeck = async () => {
-  await deckStore.save(name.value, description.value, inDeck.value)
+  await deckStore.save(name.value, description.value, inDeck.value, thumbnail.value)
   router.push({ path: '/home' })
 }
 
@@ -270,17 +280,31 @@ onMounted(() => {
   top: 0;
 }
 
+#form {
+  padding-top: 3.5rem;
+  padding-left: 1rem;
+  text-align: center;
+}
+
 #popup {
-  width: 20rem;
-  height: 30rem;
-  background-color: red;
+  display: flex;
+  height: 15rem;
+  background-color: white;
   border-radius: 20px;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -50px;
-  margin-left: -50px;
+  top: 40%;
+  left: 30%;
   z-index: 1000;
+}
+
+#saveButton,
+#saveCancel {
+  position: relative;
+  margin-top: 0.5rem;
+}
+
+#description {
+  width: 10rem;
 }
 
 button {

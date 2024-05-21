@@ -12,7 +12,7 @@ export const useDeckStore = defineStore({
     decks: null
   }),
   actions: {
-    async save(name, description, inDeck) {
+    async save(name, description, inDeck, thumbnail) {
       const requestOptions = {
         method: 'POST',
         headers: {
@@ -22,7 +22,8 @@ export const useDeckStore = defineStore({
           name: name,
           description: description,
           cards: inDeck,
-          creator: userStore.currentUser
+          creator: userStore.currentUser,
+          photo: thumbnail
         })
       }
 

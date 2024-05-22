@@ -2,16 +2,16 @@
   <div id="signUpContainer">
     <h1>Sign Up</h1>
     <br />
-    <form @submit.prevent="signUp()">
-      <div id="username">
+    <form>
+      <div id="usernameDIV">
         <label for="username">Username: </label>
         <input type="text" placeholder="Enter Username" v-model="username" id="username" />
       </div>
-      <div id="password">
+      <div id="passwordDIV">
         <label for="password">Password: </label>
         <input type="password" placeholder="Enter Password" v-model="password" id="password" />
       </div>
-      <button type="submit" @click="signUp()">Sign Up</button>
+      <button @click="signUp()">Sign Up</button>
     </form>
   </div>
 </template>
@@ -27,7 +27,7 @@ const router = useRouter()
 const userStore = useUserStore()
 
 async function signUp() {
-  userStore.register(username.value, password.value)
+  await userStore.register(username.value, password.value)
   router.push({ path: '/signin' })
 }
 </script>

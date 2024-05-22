@@ -14,13 +14,12 @@ export const useUserStore = defineStore({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: username, password: password })
       }
-
       try {
         const res = await fetch('http://localhost:8000/register', requestOptions)
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`)
         }
-        console.log('success!!')
+        console.log('success!! registered')
       } catch (error) {
         console.error('problem', error)
       }
@@ -43,7 +42,7 @@ export const useUserStore = defineStore({
         this.currentUser = data.user
         this.token = data.token
         console.log(this.token)
-        console.log('success!!')
+        console.log('success!! logged in')
       } catch (error) {
         console.error('problem', error)
       }

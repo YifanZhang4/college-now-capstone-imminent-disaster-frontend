@@ -12,10 +12,10 @@ const router = createRouter({
     {
       path: '/home',
       name: 'home',
-      component: () => import('../views/HomeView.vue'),
-      meta: {
-        needsAuth: true
-      }
+      component: () => import('../views/HomeView.vue')
+      // meta: {
+      //   needsAuth: true
+      // }
     },
     {
       path: '/signup',
@@ -30,18 +30,18 @@ const router = createRouter({
     {
       path: '/createdeck',
       name: 'createdeck',
-      component: () => import('../views/createDeckView.vue'),
-      meta: {
-        needsAuth: true
-      }
+      component: () => import('../views/createDeckView.vue')
+      // meta: {
+      //   needsAuth: true
+      // }
     },
     {
       path: '/editdeck/:id',
       name: 'editdeck',
-      component: () => import('../views/editDeckView.vue'),
-      meta: {
-        needsAuth: true
-      }
+      component: () => import('../views/editDeckView.vue')
+      // meta: {
+      //   needsAuth: true
+      // }
     }
   ]
 })

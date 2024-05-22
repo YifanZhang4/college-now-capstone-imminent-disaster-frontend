@@ -9,13 +9,13 @@
         <label for="name">Deck Description: </label>
         <input type="text" name="description" id="description" v-model="description" />
         <br />
-        <label for="thumbnail">Deck Thumbnail: </label>
+        <!-- <label for="thumbnail">Deck Thumbnail: </label>
         <input
           type="file"
           name="thumbnail"
           id="thumbnail"
           accept="image/png, image/gif, image/jpeg"
-        />
+        /> -->
         <br />
         <button @click="saveDeck" id="saveButton">Save</button>
         <br />
@@ -46,11 +46,14 @@
         <div id="cardPage">
           <button v-if="currentPage < 25" @click="nextPage" id="next">Next</button>
           <br />
-          <button v-if="currentPage > 1" @click="lastPage" id="back">Back</button>
+          <button v-if="currentPage > 1" @click="lastPage" id="backNext">Back</button>
         </div>
       </div>
     </div>
     <div id="deck">
+      <div id="deckLabel">
+        <h1>Your deck:</h1>
+      </div>
       <div class="deckContainer">
         <div
           class="deckCards"
@@ -79,7 +82,6 @@ let currentPage = 1
 let totalCards = ref(0)
 let name = ref('')
 let description = ref('')
-let thumbnail = ref({})
 let router = useRouter()
 let saving = ref(false)
 const deckStore = useDeckStore()
@@ -169,8 +171,8 @@ const lastPage = async () => {
 }
 
 const saveDeck = async () => {
-  await deckStore.save(name.value, description.value, inDeck.value, thumbnail.value)
-  router.push({ path: '/home' })
+  await deckStore.save(name.value, description.value, inDeck.value)
+  // router.push({ path: '/home' })
 }
 
 const saveToggle = () => {
@@ -241,6 +243,24 @@ onMounted(() => {
   border-radius: 10px;
 }
 
+#deckLabel {
+  position: absolute;
+  z-index: 3;
+  background-color: gray;
+  width: 80vw;
+  top: 10%;
+  left: 1%;
+  height: 3rem;
+}
+
+h1 {
+  color: white;
+  position: absolute;
+  top: 11%;
+  left: 2%;
+  z-index: 5;
+}
+
 .deckContainer {
   display: flex;
   flex-direction: row;
@@ -254,6 +274,7 @@ onMounted(() => {
   left: 1%;
   overflow-y: auto;
   justify-content: space-evenly;
+  padding-top: 1.5rem;
 }
 
 .deckCards {
@@ -274,10 +295,6 @@ onMounted(() => {
   margin-top: 0.5rem;
   margin: 0 auto;
   transform: scale(1.2);
-}
-
-#back {
-  top: 0;
 }
 
 #form {
@@ -314,7 +331,7 @@ button {
 }
 
 #next,
-#back {
+#backNext {
   width: 4rem;
 }
 
@@ -322,5 +339,11 @@ button {
   width: 10rem;
   padding-left: 5rem;
   padding-bottom: 1rem;
+}
+
+#back {
+  position: absolute;
+  top: 1%;
+  left: 1%;
 }
 </style>

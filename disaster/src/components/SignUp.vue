@@ -19,28 +19,16 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '../stores/user'
 
 const username = ref('')
 const password = ref('')
 const router = useRouter()
+const userStore = useUserStore()
 
 async function signUp() {
-  const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: username.value, password: password.value })
-  }
-
-  try {
-    const res = await fetch('http://localhost:8000/register', requestOptions)
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`)
-    }
-    console.log('success!!')
-    router.push({ path: '/signin' })
-  } catch (error) {
-    console.error('problem', error)
-  }
+  userStore.register(username.value, password.value)
+  router.push({ path: '/signin' })
 }
 </script>
 

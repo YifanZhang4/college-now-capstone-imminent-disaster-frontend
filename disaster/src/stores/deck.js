@@ -12,7 +12,8 @@ export const useDeckStore = defineStore({
     decks: null
   }),
   actions: {
-    async save(name, description, inDeck, thumbnail) {
+    async save(name, description, inDeck) {
+      console.log(userStore.currentUser)
       const requestOptions = {
         method: 'POST',
         headers: {
@@ -22,8 +23,7 @@ export const useDeckStore = defineStore({
           name: name,
           description: description,
           cards: inDeck,
-          creator: userStore.currentUser,
-          photo: thumbnail
+          creator: userStore.currentUser
         })
       }
 
@@ -53,26 +53,50 @@ export const useDeckStore = defineStore({
         console.error('problem', error)
       }
     },
-    async edit(name, description, inDeck) {
-      const id = ''
+    async edit(name, description, inDeck, deckId) {
+      const user = userStore.currentUser
+      const id = deckId
       const requestOptions = {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
         },
-        params: JSON.stringify({
+        body: JSON.stringify({
           name: name,
           description: description,
           cards: inDeck,
-          creator: userStore.currentUser
+          creator: user,
+          id: id
         })
       }
       try {
-        const res = await fetch(`http://localhost:8000/decks/:id`, requestOptions)
+        const res = await fetch(`http://localhost:8000/decks/${id}`, requestOptions)
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         const data = res.json()
+        console.log(data)
+      } catch (error) {
+        console.error('problem', error)
+      }
+    },
+    async delete(deckId) {
+      const id = deckId
+      const requestOptions = {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: id
+        })
+      }
+      try {
+        const res = await fetch(`http://localhost:8000/decks/${id}`, requestOptions)
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`)
+        }
+        const data = await res.json()
         console.log(data)
       } catch (error) {
         console.error('problem', error)

@@ -1,1 +1,9 @@
-<!-- http://localhost:5173/createdeck?name=altaria&description=fly&thumbnail=hehe.PNG -->
+<template>
+  <div></div>
+</template>
+
+<script setup>
+
+</script>
+
+<style scoped></style>

@@ -34,19 +34,27 @@ const router = createRouter({
       meta: {
         needsAuth: true
       }
+    },
+    {
+      path: '/editdeck/:id',
+      name: 'editdeck',
+      component: () => import('../views/editCards.vue'),
+      meta: {
+        needsAuth: true
+      }
     }
   ]
 })
 
-router.beforeEach(async (to) => {
-  const store = useUserStore()
-  if (to.meta.needsAuth && store.currentUser == null) {
-    await checkAuth(store)
-    if (!store.isAuthenticated) {
-      router.push({ path: '/signin' })
-      console.log('Not logged in')
-    }
-  }
-})
+// router.beforeEach(async (to) => {
+//   const store = useUserStore()
+//   if (to.meta.needsAuth && store.currentUser == null) {
+//     await store.auth()
+//     if ((store.isAuthenticated = true)) {
+//       router.push({ path: '/signin' })
+//       console.log('Not logged in')
+//     }
+//   }
+// })
 
 export default router

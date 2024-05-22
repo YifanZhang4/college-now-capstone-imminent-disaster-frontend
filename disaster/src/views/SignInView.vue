@@ -1,6 +1,8 @@
 <template>
   <div>
     <SignIn></SignIn>
+
+    <RouterLink to="/signup">Sign Up</RouterLink>
   </div>
 </template>
 

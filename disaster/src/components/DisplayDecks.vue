@@ -47,7 +47,7 @@ const displayDecks = async () => {
 
 const editDeck = (deck) => {
   const deckId = deck._id
-  console.log(deckId)
+  router.push({ path: `/editDeck/${deckId}` })
 }
 
 const toggle = (deck) => {

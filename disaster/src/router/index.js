@@ -38,7 +38,7 @@ const router = createRouter({
     {
       path: '/editdeck/:id',
       name: 'editdeck',
-      component: () => import('../views/editCards.vue'),
+      component: () => import('../views/editDeckView.vue'),
       meta: {
         needsAuth: true
       }

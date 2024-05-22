@@ -37,7 +37,7 @@ export const useDeckStore = defineStore({
         console.error('deck didnt save :()', error)
       }
     },
-    async get() {
+    async getDecks() {
       const creator = userStore.currentUser
       try {
         const res = await fetch(`http://localhost:8000/?creator=${encodeURIComponent(creator)}`)
@@ -51,6 +51,26 @@ export const useDeckStore = defineStore({
         console.log('decks', this.decks)
       } catch (error) {
         console.error('problem', error)
+      }
+    },
+    async getDeck(route) {
+      const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: route
+        })
+      }
+      try {
+        const res = await fetch('http://localhost:8000/find', requestOptions)
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`)
+        }
+        const data = res.json()
+        return data
+        console.log('success!! deck found')
+      } catch (error) {
+        console.error('no deck :()', error)
       }
     },
     async edit(name, description, inDeck, deckId) {

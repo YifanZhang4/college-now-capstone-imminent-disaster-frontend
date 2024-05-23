@@ -13,7 +13,7 @@ export const useDeckStore = defineStore({
   }),
   actions: {
     async save(name, description, inDeck) {
-      console.log(userStore.currentUser)
+      const user = await userStore.currentUser
       const requestOptions = {
         method: 'POST',
         headers: {
@@ -23,12 +23,13 @@ export const useDeckStore = defineStore({
           name: name,
           description: description,
           cards: inDeck,
-          creator: userStore.currentUser
+          creator: user
         })
       }
 
       try {
         const res = await fetch('http://localhost:8000/add', requestOptions)
+        console.log('haiiiii :3')
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`)
         }
@@ -54,28 +55,32 @@ export const useDeckStore = defineStore({
       }
     },
     async getDeck(route) {
+      const id = route
       const requestOptions = {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: route
-        })
+        headers: { 'Content-Type': 'application/json' }
       }
       try {
-        const res = await fetch('http://localhost:8000/find', requestOptions)
+        const res = await fetch(
+          `http://localhost:8000/find/?id=${encodeURIComponent(id)}`,
+          requestOptions
+        )
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`)
         }
-        const data = res.json()
-        return data
+        const data = await res.json()
         console.log('success!! deck found')
+        console.log(data)
+        return data
       } catch (error) {
         console.error('no deck :()', error)
       }
     },
-    async edit(name, description, inDeck, deckId) {
+    async edit(name, description, inDeck) {
       const user = userStore.currentUser
+      console.log(user)
       const id = deckId
+      console.log(id)
       const requestOptions = {
         method: 'PATCH',
         headers: {
@@ -85,8 +90,7 @@ export const useDeckStore = defineStore({
           name: name,
           description: description,
           cards: inDeck,
-          creator: user,
-          id: id
+          creator: user
         })
       }
       try {
@@ -106,10 +110,7 @@ export const useDeckStore = defineStore({
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          id: id
-        })
+        }
       }
       try {
         const res = await fetch(`http://localhost:8000/decks/${id}`, requestOptions)

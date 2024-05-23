@@ -2,7 +2,7 @@
   <div>
     <button @click="back()" id="back">Back</button>
     <div id="popup" v-if="saving">
-      <form id="form">
+      <form id="form" @submit.prevent="saveDeck">
         <label for="name">Deck Name: </label>
         <input type="text" name="name" id="name" v-model="name" />
         <br />
@@ -17,9 +17,11 @@
           accept="image/png, image/gif, image/jpeg"
         /> -->
         <br />
-        <button @click="saveDeck" id="saveButton">Save</button>
+        <button id="saveButton">Save</button>
         <br />
-        <button @click="saveToggle" id="saveCancel">Cancel</button>
+      </form>
+      <form @submit.prevent="saveToggle">
+        <button id="saveCancel">Cancel</button>
       </form>
     </div>
     <div id="findContainer">
@@ -172,7 +174,8 @@ const lastPage = async () => {
 
 const saveDeck = async () => {
   await deckStore.save(name.value, description.value, inDeck.value)
-  // router.push({ path: '/home' })
+  console.log('can i home now')
+  router.push({ path: '/home' })
 }
 
 const saveToggle = () => {
@@ -318,6 +321,12 @@ h1 {
 #saveCancel {
   position: relative;
   margin-top: 0.5rem;
+}
+
+#saveCancel {
+  position: relative;
+  top: 65%;
+  right: 290%;
 }
 
 #description {

@@ -2,7 +2,7 @@
   <div>
     <div id="popup" v-if="deleting">
       <h2>Are you sure?</h2>
-      <button @click="deleteDeck()">Yes</button>
+      <button @click="deleteDeck(event)">Yes</button>
       <button @click="toggle">No</button>
     </div>
     <div class="deck-showcase">
@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useDeckStore } from '@/stores/deck'
 import { useRouter } from 'vue-router'
@@ -31,9 +31,10 @@ let deckId = ref('')
 const router = useRouter()
 
 const displayDecks = async () => {
-  const creator = userStore.currentUser
+  const userId = localStorage.userId
+  console.log('display', userId)
   try {
-    const res = await fetch(`http://localhost:8000/?creator=${encodeURIComponent(creator)}`)
+    const res = await fetch(`http://localhost:8000/?creator=${userId}`)
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
@@ -47,24 +48,23 @@ const displayDecks = async () => {
 
 const editDeck = (deck) => {
   const deckId = deck._id
-  router.push({ path: `/editDeck/${deckId}` })
+  router.push({ name: 'editdeck', params: { deckId } })
 }
 
 const toggle = (deck) => {
+  if (!deck) return
   deleting.value = !deleting.value
-  if (deleting) {
+  if (deleting.value) {
     deckId.value = deck._id
-  }
-  if (!deleting) {
-    deckId.value = ''
   } else {
-    return
+    deckId.value = ''
   }
 }
 
 const deleteDeck = () => {
   console.log(deckId)
   deckStore.delete(deckId.value)
+  location.reload()
 }
 
 onMounted(async () => {

@@ -4,6 +4,7 @@ export const useUserStore = defineStore({
   id: 'store',
   state: () => ({
     currentUser: null,
+    userId: null,
     token: null,
     isAuthenticated: false
   }),
@@ -41,37 +42,36 @@ export const useUserStore = defineStore({
         const data = await res.json()
         this.currentUser = data.user
         this.token = data.token
-        console.log(this.token)
+        this.userId = data.user._id
+        localStorage.setItem('token', this.token)
+        localStorage.setItem('userId', this.userId)
         console.log('success!! logged in')
       } catch (error) {
         console.error('problem', error)
       }
     },
     async auth() {
-      if (this.token === null) {
-        console.log('null token')
-      } else {
-        console.log('auth', this.token)
-        const requestOptions = {
-          method: 'GET',
-          headers: { Authorization: `Bearer ${this.token}` }
+      const requestOptions = {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${localStorage.token}` }
+      }
+      try {
+        const res = await fetch('http://localhost:8000/protected', requestOptions)
+        if (!res.ok) {
+          throw new Error(`HTTP error status: ${res.status}`)
         }
-        try {
-          const res = await fetch('http://localhost:8000/protected', requestOptions)
-          if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`)
-          }
-          this.isAuthenticated = true
-        } catch (error) {
-          console.error('problem', error)
-          this.isAuthenticated = false
-        }
+        this.isAuthenticated = true
+      } catch (error) {
+        console.error('problem', error)
+        this.isAuthenticated = false
       }
     },
     logout() {
       this.currentUser = null
       this.token = null
       this.isAuthenticated = false
+      localStorage.removeItem('token')
+      localStorage.removeItem('userId')
     }
   }
 })

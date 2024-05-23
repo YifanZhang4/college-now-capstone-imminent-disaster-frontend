@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { editCards } from '../components/editCards.vue'
+import editCards from '../components/editCards.vue'
 </script>
 
 <style scoped></style>

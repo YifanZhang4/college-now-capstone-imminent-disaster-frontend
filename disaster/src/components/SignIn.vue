@@ -2,7 +2,7 @@
   <div id="signInContainer">
     <h1>Sign In</h1>
     <br />
-    <form>
+    <form @submit.prevent="signIn()">
       <div id="usernameDIV">
         <label for="username">Username: </label>
         <input type="text" placeholder="Enter Username" v-model="username" id="username" required />
@@ -17,7 +17,7 @@
           required
         />
       </div>
-      <button @click="signIn()">Sign In</button>
+      <button type="submit">Sign In</button>
     </form>
   </div>
 </template>

@@ -41,6 +41,7 @@ export const useUserStore = defineStore({
         }
         const data = await res.json()
         this.currentUser = data.user
+        console.log(this.currentUser)
         this.token = data.token
         this.userId = data.user._id
         localStorage.setItem('token', this.token)

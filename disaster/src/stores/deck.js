@@ -13,7 +13,7 @@ export const useDeckStore = defineStore({
   }),
   actions: {
     async save(name, description, inDeck) {
-      const user = localStorage.currentUser
+      const user = userStore.currentUser
       const requestOptions = {
         method: 'POST',
         headers: {

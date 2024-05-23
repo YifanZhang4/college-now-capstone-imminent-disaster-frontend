@@ -1,12 +1,10 @@
 <template>
   <div>
-    <SignUp></SignUp>
+    <RouterLink to="/signup">Sign Up</RouterLink>
     <RouterLink to="/signin">Sign In</RouterLink>
   </div>
 </template>
 
-<script setup>
-import SignUp from '../components/SignUp.vue'
-</script>
+<script setup></script>
 
 <style lang="scss" scoped></style>

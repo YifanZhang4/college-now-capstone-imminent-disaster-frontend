@@ -3,43 +3,32 @@
     <h1>Sign Up</h1>
     <br />
     <form>
-      <div id="username">
+      <div id="usernameDIV">
         <label for="username">Username: </label>
-        <input type="text" placeholder="Enter Username" v-model="username" />
+        <input type="text" placeholder="Enter Username" v-model="username" id="username" />
       </div>
-      <div id="password">
+      <div id="passwordDIV">
         <label for="password">Password: </label>
-        <input type="password" placeholder="Enter Password" v-model="password" />
+        <input type="password" placeholder="Enter Password" v-model="password" id="password" />
       </div>
-      <button type="submit" @click="signUp()">Sign Up</button>
+      <button @click="signUp()">Sign Up</button>
     </form>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '../stores/user'
 
 const username = ref('')
 const password = ref('')
+const router = useRouter()
+const userStore = useUserStore()
 
 async function signUp() {
-  const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: username.value, password: password.value })
-  }
-
-  try {
-    const response = await fetch('http://localhost:8000/register', requestOptions)
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    const data = await response.json()
-    console.log(data)
-    console.log('success!!')
-  } catch (error) {
-    console.error('problem', error)
-  }
+  await userStore.register(username.value, password.value)
+  router.push({ path: '/signin' })
 }
 </script>
 

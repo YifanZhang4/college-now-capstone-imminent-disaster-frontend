@@ -45,6 +45,7 @@ export const useUserStore = defineStore({
         this.userId = data.user._id
         localStorage.setItem('token', this.token)
         localStorage.setItem('userId', this.userId)
+        localStorage.setItem('currentUser', this.currentUser)
         console.log('success!! logged in')
       } catch (error) {
         console.error('problem', error)
@@ -72,6 +73,7 @@ export const useUserStore = defineStore({
       this.isAuthenticated = false
       localStorage.removeItem('token')
       localStorage.removeItem('userId')
+      localStorage.removeItem('currentUser')
     }
   }
 })

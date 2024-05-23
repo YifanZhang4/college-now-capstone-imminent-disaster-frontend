@@ -21,7 +21,7 @@ export const useCardStore = defineStore('cards', {
           name: name,
           description: description,
           cards: inDeck,
-          creator: userStore.currentUser
+          creator: localStorage.currentUser
         })
       }
 

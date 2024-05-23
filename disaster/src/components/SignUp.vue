@@ -2,7 +2,7 @@
   <div id="signUpContainer">
     <h1>Sign Up</h1>
     <br />
-    <form>
+    <form @submit.prevent="signUp()">
       <div id="usernameDIV">
         <label for="username">Username: </label>
         <input type="text" placeholder="Enter Username" v-model="username" id="username" />
@@ -11,7 +11,7 @@
         <label for="password">Password: </label>
         <input type="password" placeholder="Enter Password" v-model="password" id="password" />
       </div>
-      <button @click="signUp()">Sign Up</button>
+      <button type="submit">Sign Up</button>
     </form>
   </div>
 </template>

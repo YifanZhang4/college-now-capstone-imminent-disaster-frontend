@@ -13,7 +13,7 @@ export const useDeckStore = defineStore({
   }),
   actions: {
     async save(name, description, inDeck) {
-      const user = await userStore.currentUser
+      const user = localStorage.currentUser
       const requestOptions = {
         method: 'POST',
         headers: {
@@ -39,7 +39,7 @@ export const useDeckStore = defineStore({
       }
     },
     async getDecks() {
-      const creator = userStore.currentUser
+      const creator = localStorage.currentUser
       try {
         const res = await fetch(`http://localhost:8000/?creator=${encodeURIComponent(creator)}`)
         if (!res.ok) {
@@ -76,9 +76,7 @@ export const useDeckStore = defineStore({
         console.error('no deck :()', error)
       }
     },
-    async edit(name, description, inDeck) {
-      const user = userStore.currentUser
-      console.log(user)
+    async edit(name, description, inDeck, deckId) {
       const id = deckId
       console.log(id)
       const requestOptions = {
@@ -89,8 +87,7 @@ export const useDeckStore = defineStore({
         body: JSON.stringify({
           name: name,
           description: description,
-          cards: inDeck,
-          creator: user
+          cards: inDeck
         })
       }
       try {
